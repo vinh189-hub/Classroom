@@ -1,20 +1,17 @@
 package com.example.classroom.controllers;
 
 import com.example.classroom.app.Response;
-import com.example.classroom.app.ResponseError;
 import com.example.classroom.dto.RegisterRequest;
-import com.example.classroom.exceptions.ForbiddenException;
-import com.example.classroom.exceptions.UserNotFoundException;
 import com.example.classroom.services.AuthService;
 import jakarta.validation.Valid;
 import jakarta.validation.Validator;
-import org.apache.catalina.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class AuthController {
