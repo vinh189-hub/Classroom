@@ -4,6 +4,7 @@ import com.example.classroom.repositories.AuthRepository;
 import com.example.classroom.services.AuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 public class ApplicationConfig {
 
+    @Autowired
     private AuthRepository authRepository;
     private Logger logger = LoggerFactory.getLogger(ApplicationConfig.class);
 
@@ -43,4 +45,5 @@ public class ApplicationConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 }

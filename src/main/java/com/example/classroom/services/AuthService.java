@@ -64,6 +64,7 @@ public class AuthService {
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         logger.info(request.getEmail());
         try{
+            logger.info("Bo may vao duoc day roi con cho dm");
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             request.getEmail(),
@@ -75,13 +76,11 @@ public class AuthService {
             logger.info(e.getMessage());
             logger.info("Day nua con con dien");
         }
-        logger.info("Deo vao duoc");
         var user = authRepository.findByEmail(request.getEmail())
                 .orElseThrow();
-        logger.info("Cho nay nay con cho: " + user.getEmail());
         var jwtToken = jwtService.generateToken(user);
-//        revokeAllUserTokens(user);
-//        saveUserToken(user, jwtToken);
+        revokeAllUserTokens(user);
+        saveUserToken(user, jwtToken);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
