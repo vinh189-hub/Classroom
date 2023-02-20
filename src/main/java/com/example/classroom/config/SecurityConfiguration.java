@@ -15,26 +15,27 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
-
     private final AuthenticationProvider authenticationProvider;
     private final JWTAuthenticationFilter jwtAuthFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors()
+                .disable()
                 .csrf()
                 .disable()
-                .authorizeHttpRequests()
-                .requestMatchers("/api/v1/auth/**")
-                .permitAll()
-                .anyRequest()
-                .authenticated()
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+//                .authorizeHttpRequests()
+//                .requestMatchers("/api/v1/auth/**")
+//                .permitAll()
+//                .anyRequest()
+//                .authenticated()
+//                .and()
+//                .sessionManagement()
+//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//                .and()
+//                .authenticationProvider(authenticationProvider)
+//                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
 
         ;
 

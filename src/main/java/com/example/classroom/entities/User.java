@@ -1,6 +1,7 @@
 package com.example.classroom.entities;
 
 
+import com.example.classroom.token.Token;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -35,6 +36,9 @@ public class User implements UserDetails {
     private int type;
     private int status;
 
+
+    @OneToMany(mappedBy = "user")
+    public List<Token> token;
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate

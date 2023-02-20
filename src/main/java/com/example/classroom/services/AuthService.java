@@ -36,10 +36,10 @@ public class AuthService {
     @Autowired
     private AuthRepository authRepository;
 
-    public AuthenticationResponse register(@Valid  RegisterRequest registerRequest)
+    public void register(@Valid  RegisterRequest registerRequest)
     {
-        this.logger.info("request",registerRequest);
         var user = this.authRepository.findByEmail(registerRequest.getEmail());
+        logger.info(String.valueOf(user.isPresent()));
         if (user.isPresent()) {
             throw new UserExistedException("user existed");
         }
@@ -51,33 +51,41 @@ public class AuthService {
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
                 .build();
         this.authRepository.save(entity);
-
-        var jwtToken = jwtService.generateToken(entity);
-        saveUserToken(entity, jwtToken);
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .build();
+//        var jwtToken = jwtService.generateToken(entity);
+//        logger.info(jwtToken);
+//        saveUserToken(entity, jwtToken);
+//        return AuthenticationResponse.builder()
+//                .token(jwtToken)
+//                .build();
 
     }
 
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                )
-        );
+        logger.info(request.getEmail());
+        try{
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),
+                            request.getPassword()
+                    )
+            );
+        }catch (Exception e){
+            logger.info("Day nay con cho");
+            logger.info(e.getMessage());
+            logger.info("Day nua con con dien");
+        }
+        logger.info("Deo vao duoc");
         var user = authRepository.findByEmail(request.getEmail())
                 .orElseThrow();
+        logger.info("Cho nay nay con cho: " + user.getEmail());
         var jwtToken = jwtService.generateToken(user);
-        revokeAllUserTokens(user);
-        saveUserToken(user, jwtToken);
+//        revokeAllUserTokens(user);
+//        saveUserToken(user, jwtToken);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
 
-//        return new AuthenticationResponse("assd");
     }
 
     private void saveUserToken(User user, String jwtToken) {
