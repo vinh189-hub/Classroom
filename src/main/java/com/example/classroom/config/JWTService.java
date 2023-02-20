@@ -1,10 +1,13 @@
 package com.example.classroom.config;
 
+import com.example.classroom.services.AuthService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -18,12 +21,15 @@ import java.util.function.Function;
 @Service
 public class JWTService {
 
+
+    private Logger logger = LoggerFactory.getLogger(AuthService.class);
     private static final String SECRET_KEY = System.getenv("SECRET_KEY");
     public String extractUsername(String token){
         return extractClaim(token, Claims::getSubject);
     }
 
     public String generateToken(UserDetails userDetails){
+        logger.info("Lozzzzzzzzzzzzzzzz");
         return generateToken(new HashMap<>(), userDetails);
     }
 
