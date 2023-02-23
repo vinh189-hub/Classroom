@@ -10,10 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -38,5 +35,11 @@ public class AuthController {
     public  ResponseEntity authenticate(@RequestBody AuthRequest authRequest){
         Response response = this.authService.authenticate(authRequest);
         return  ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity getMe()
+    {
+        return ResponseEntity.ok(new Response("success",null));
     }
 }

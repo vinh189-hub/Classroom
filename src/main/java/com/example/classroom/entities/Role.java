@@ -7,7 +7,6 @@ import lombok.*;
 
 @Entity
 @Table(name="roles")
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
@@ -16,6 +15,7 @@ import lombok.*;
 public class Role {
 
     @Id
+    @Column(name="id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 

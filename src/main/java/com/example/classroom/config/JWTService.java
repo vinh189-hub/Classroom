@@ -2,6 +2,7 @@ package com.example.classroom.config;
 
 
 import com.example.classroom.services.AuthService;
+import com.example.classroom.services.MyUserDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -24,21 +25,22 @@ public class JWTService {
 
     private Logger logger = LoggerFactory.getLogger(AuthService.class);
     private static final String SECRET_KEY = System.getenv("SECRET_KEY");
-    public String extractUsername(String token){
+    public String extractUserID(String token){
         return extractClaim(token, Claims::getSubject);
     }
 
-    public String generateToken(UserDetails userDetails){
+    public String generateToken(Long userID){
         logger.info("Lozzzzzzzzzzzzzzzz");
-        return generateToken(new HashMap<>(), userDetails);
+        String userId = Long.toString(userID);
+        return generateToken(new HashMap<>(), userId);
     }
 
-    public String generateToken(Map<String, Objects> claims, UserDetails userDetails){
+    public String generateToken(Map<String, Objects> claims, String userId){
         return
                 Jwts
                 .builder()
                 .setClaims(claims)
-                .setSubject(userDetails.getUsername())
+                .setSubject(userId)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 *24))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
@@ -64,9 +66,9 @@ public class JWTService {
         return Keys.hmacShaKeyFor(key);
     }
 
-    public boolean isValidToken(String token, UserDetails userDetails){
-        final String username = extractUsername(token);
-        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+    public boolean isValidToken(String token, MyUserDetails userDetails){
+        final String userID = extractUserID(token);
+        return userID.equals(Long.toString(userDetails.getId())) && !isTokenExpired(token);
     }
 
     private boolean isTokenExpired(String token){

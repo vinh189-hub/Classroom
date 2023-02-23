@@ -1,6 +1,7 @@
 package com.example.classroom.services;
 
 import com.example.classroom.app.Response;
+import com.example.classroom.config.JWTService;
 import com.example.classroom.dto.AuthRequest;
 import com.example.classroom.dto.RegisterRequest;
 import com.example.classroom.entities.User;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +31,9 @@ public class AuthService {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JWTService jwtService;
 
     public void register(@Valid  RegisterRequest registerRequest)
     {
@@ -53,9 +58,10 @@ public class AuthService {
                 new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword())
         );
 
-        if (authentication.isAuthenticated()){
-            return new  Response("thanh cong", null);
-        }
-        return  new Response("that bai", null);
+        var user = authRepository.findByEmail(authRequest.getEmail()).orElseThrow();
+        var token = jwtService.generateToken(user.getId());
+
+        return new Response("Success", token);
+
     }
 }
