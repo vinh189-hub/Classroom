@@ -6,6 +6,7 @@ import com.example.classroom.dto.AuthRequest;
 import com.example.classroom.dto.RegisterRequest;
 import com.example.classroom.entities.User;
 import com.example.classroom.exceptions.UserExistedException;
+import com.example.classroom.exceptions.UserNotFoundException;
 import com.example.classroom.repositories.AuthRepository;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -17,6 +18,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import javax.swing.text.html.Option;
+import java.util.Optional;
 
 @Service
 public class AuthService {
@@ -57,11 +61,16 @@ public class AuthService {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword())
         );
-
         var user = authRepository.findByEmail(authRequest.getEmail()).orElseThrow();
         var token = jwtService.generateToken(user.getId());
-
         return new Response("Success", token);
-
     }
+
+    public User getMe(Long id) {
+        return this.authRepository.findById(id).orElseThrow(() -> new UserNotFoundException("user doesn't existed"));
+    }
+
+
+
+
 }

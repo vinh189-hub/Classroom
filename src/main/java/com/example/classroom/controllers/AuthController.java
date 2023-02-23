@@ -3,13 +3,17 @@ package com.example.classroom.controllers;
 import com.example.classroom.app.Response;
 import com.example.classroom.dto.AuthRequest;
 import com.example.classroom.dto.RegisterRequest;
+import com.example.classroom.entities.User;
 import com.example.classroom.services.AuthService;
+import com.example.classroom.services.MyUserDetails;
 import jakarta.validation.Valid;
 import jakarta.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -40,6 +44,9 @@ public class AuthController {
     @GetMapping("/me")
     public ResponseEntity getMe()
     {
-        return ResponseEntity.ok(new Response("success",null));
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var userDetails = (MyUserDetails) authentication.getPrincipal();
+        var result = this.authService.getMe(userDetails.getId());
+        return ResponseEntity.ok(new Response("success",result));
     }
 }
