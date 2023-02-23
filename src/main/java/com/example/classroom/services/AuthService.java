@@ -1,5 +1,7 @@
 package com.example.classroom.services;
 
+import com.example.classroom.app.Response;
+import com.example.classroom.dto.AuthRequest;
 import com.example.classroom.dto.RegisterRequest;
 import com.example.classroom.entities.User;
 import com.example.classroom.exceptions.UserExistedException;
@@ -8,6 +10,10 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,6 +23,12 @@ public class AuthService {
 
     @Autowired
     private AuthRepository authRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     public void register(@Valid  RegisterRequest registerRequest)
     {
@@ -30,9 +42,20 @@ public class AuthService {
                 .username(registerRequest.getUsername())
                 .status(1)
                 .type(1)
-                .password(registerRequest.getPassword())
+                .password(passwordEncoder.encode(registerRequest.getPassword()))
                 .build();
 
         this.authRepository.save(entity);
+    }
+
+    public Response authenticate(AuthRequest authRequest){
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword())
+        );
+
+        if (authentication.isAuthenticated()){
+            return new  Response("thanh cong", null);
+        }
+        return  new Response("that bai", null);
     }
 }
