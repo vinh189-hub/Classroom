@@ -50,7 +50,6 @@ public class AuthService {
                 .email(registerRequest.getEmail())
                 .username(registerRequest.getUsername())
                 .status(1)
-                .type(1)
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
                 .build();
 
