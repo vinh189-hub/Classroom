@@ -2,6 +2,7 @@ package com.example.classroom.controllers;
 
 import com.example.classroom.app.Response;
 import com.example.classroom.dto.TeacherCreateClassroomRequest;
+import com.example.classroom.exceptions.ConflictException;
 import com.example.classroom.services.MemberService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class MemberController  extends BaseController{
     }
 
     @PostMapping("/teacher-register-class")
-    public ResponseEntity teacherCreateClass(@RequestBody  TeacherCreateClassroomRequest request)
+    public ResponseEntity teacherCreateClass(@RequestBody  TeacherCreateClassroomRequest request) throws ConflictException
     {
         var userId = this.getUserId();
         this.memberService.teacherCreateClassroom(request,userId);

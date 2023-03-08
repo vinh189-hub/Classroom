@@ -52,4 +52,11 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ResponseError("forbidden"));
     }
 
+    @ExceptionHandler(ConflictException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseEntity handleConflictException(ConflictException exception)
+    {
+        logger.error(exception.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseError(exception.getMessage()));
+    }
 }
