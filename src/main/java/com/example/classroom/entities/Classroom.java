@@ -1,10 +1,10 @@
 package com.example.classroom.entities;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -12,37 +12,27 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
-@Setter
-@Getter
-@Builder
-@Table(name = "users")
-public class User {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Classroom {
+
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String email;
-    private String username;
-    @JsonIgnore
-    private String password;
+    private int id;
 
-    private int status;
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "users_roles",
-            joinColumns = @JoinColumn(name = "users_id"),
-            inverseJoinColumns = @JoinColumn(name = "roles_id"))
-    private Set<Role> roles = new HashSet<>();
-
+    private String name;
+    private String code;
+    private String description;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "users_classrooms",
-            joinColumns = @JoinColumn(name = "users_id)"),
-            inverseJoinColumns = @JoinColumn(name = "classrooms_id")
+            joinColumns = @JoinColumn(name = "classrooms_id)"),
+            inverseJoinColumns = @JoinColumn(name = "users_id")
     )
     private Set<Classroom> classrooms = new HashSet<>();
+
 
     @JsonProperty("created_at")
     @Column(name = "created_at")

@@ -1,9 +1,7 @@
 package com.example.classroom.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,6 +10,7 @@ import lombok.Setter;
 public class RegisterRequest {
     @NotEmpty()
     @Email(message =  "phải là email")
+    @NotBlank(message = "email is mandatory")
     private String email;
 
     @NotEmpty()
@@ -20,5 +19,6 @@ public class RegisterRequest {
 
     @NotNull()
     @NotEmpty()
+    @Size( min = 2, message = "it nhat 2 ki tu")
     private String password;
 }

@@ -14,7 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -30,7 +34,14 @@ public class AuthController {
     AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody @Valid RegisterRequest request )  {
+    public ResponseEntity register(@RequestBody @Valid RegisterRequest request, BindingResult bindingResult)  {
+        if (bindingResult.hasErrors()) {
+            List<String> errors = bindingResult.getFieldErrors()
+                    .stream()
+                    .map(error -> error.getDefaultMessage())
+                    .collect(Collectors.toList());
+            return ResponseEntity.badRequest().body(errors);
+        }
         this.authService.register(request);
         return ResponseEntity.ok(new Response("register success",null));
     }
