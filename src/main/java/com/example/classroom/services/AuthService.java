@@ -60,7 +60,7 @@ public class AuthService {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword())
         );
-        var user = authRepository.findByEmail(authRequest.getEmail()).orElseThrow();
+        var user = authRepository.findByEmail(authRequest.getEmail()).orElseThrow(() -> new UserNotFoundException("user doesn't exist"));
         var token = jwtService.generateToken(user.getId());
         return new Response("Success", token);
     }

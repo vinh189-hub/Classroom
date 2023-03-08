@@ -34,14 +34,7 @@ public class AuthController {
     AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody @Valid RegisterRequest request, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            List<String> errors = bindingResult.getFieldErrors()
-                    .stream()
-                    .map(error -> error.getDefaultMessage())
-                    .collect(Collectors.toList());
-            return ResponseEntity.badRequest().body(errors);
-        }
+    public ResponseEntity register(@RequestBody @Valid RegisterRequest request) {
         this.authService.register(request);
         return ResponseEntity.ok(new Response("register success", null));
     }
