@@ -8,9 +8,7 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -37,12 +35,8 @@ public class User {
     private Set<Role> roles = new HashSet<>();
 
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "users_classrooms",
-            joinColumns = @JoinColumn(name = "users_id)"),
-            inverseJoinColumns = @JoinColumn(name = "classrooms_id")
-    )
-    private Set<Classroom> classrooms = new HashSet<>();
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL )
+    private List<UserClassroom> classrooms = new ArrayList<>();
 
     @JsonProperty("created_at")
     @Column(name = "created_at")

@@ -11,6 +11,7 @@ public class RegisterRequest {
     @NotEmpty()
     @Email(message =  "phải là email")
     @NotBlank(message = "email is mandatory")
+    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "Email khong dung format")
     private String email;
 
     @NotEmpty()
@@ -19,6 +20,5 @@ public class RegisterRequest {
 
     @NotNull()
     @NotEmpty()
-    @Size( min = 2, message = "it nhat 2 ki tu")
     private String password;
 }

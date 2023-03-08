@@ -34,7 +34,7 @@ public class AuthController {
     AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody @Valid RegisterRequest request, BindingResult bindingResult)  {
+    public ResponseEntity register(@RequestBody @Valid RegisterRequest request, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             List<String> errors = bindingResult.getFieldErrors()
                     .stream()
@@ -43,21 +43,20 @@ public class AuthController {
             return ResponseEntity.badRequest().body(errors);
         }
         this.authService.register(request);
-        return ResponseEntity.ok(new Response("register success",null));
+        return ResponseEntity.ok(new Response("register success", null));
     }
 
     @PostMapping("/authenticate")
-    public  ResponseEntity authenticate(@RequestBody AuthRequest authRequest){
+    public ResponseEntity authenticate(@RequestBody AuthRequest authRequest) {
         Response response = this.authService.authenticate(authRequest);
-        return  ResponseEntity.ok(response);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/me")
-    public ResponseEntity getMe()
-    {
+    public ResponseEntity getMe() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         var userDetails = (MyUserDetails) authentication.getPrincipal();
         var result = this.authService.getMe(userDetails.getId());
-        return ResponseEntity.ok(new Response("success",result));
+        return ResponseEntity.ok(new Response("success", result));
     }
 }
