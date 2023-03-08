@@ -1,0 +1,1 @@
+alter table classrooms add column room_name varchar
