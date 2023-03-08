@@ -69,4 +69,8 @@ public class AuthService {
         return this.authRepository.findById(id).orElseThrow(() -> new UserNotFoundException("user doesn't existed"));
     }
 
+    public User getById(Long id) {
+        return this.authRepository.findById(id).orElseThrow(() -> new UserNotFoundException("user not found"));
+    }
+
 }

@@ -1,37 +1,60 @@
 package com.example.classroom.entities;
 
+import com.example.classroom.enums.ERole;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
+import java.util.Date;
 
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
 @Builder
-@Table(name = "users_classrooms")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserClassroom {
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
 
-    @EmbeddedId
-    private UserClassroomId userClassroomId;
-    @ManyToOne
-    @MapsId("userId")
-    @JoinColumn(name = "users_id")
-    private User user;
+    private Long id;
 
     @ManyToOne
-    @MapsId("classroomId")
-    @JoinColumn(name = "classrooms_id")
-    private Classroom classroom;
+    @JoinColumn(name="user_id")
+    User user;
 
-    public UserClassroom(User user, int role){
-        this.user = user;
-        this.role = role;
+    @ManyToOne
+    @JoinColumn(name="classroom_id")
+    Classroom classroom;
+
+    @Column(name="role")
+    private ERole role;
+
+    @JsonProperty("created_at")
+    @Column(name = "created_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    @CreatedDate
+    private Date createdAt;
+
+    @Column(name = "updated_at")
+    @JsonProperty("updated_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    @LastModifiedDate
+    private Date updatedAt;
+
+    @PrePersist
+    public void onCreate() {
+        this.createdAt = new Date();
+        this.updatedAt = new Date();
     }
 
-    private int role;
-
+    @PreUpdate
+    public void onUpdate() {
+        this.updatedAt = new Date();
+    }
 
 }

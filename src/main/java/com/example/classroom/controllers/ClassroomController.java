@@ -16,22 +16,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/v1/classroom")
+@RequestMapping("/api/v1/classrooms")
 public class ClassroomController {
 
     @Autowired
     private ClassroomService classroomService;
 
-    @PostMapping("/create-classroom")
-    public ResponseEntity createClassroom(@RequestBody @Valid RegisterClassroomRequest registerClassroomRequest, BindingResult bindingResult){
-        if (bindingResult.hasErrors()) {
-            List<String> errors = bindingResult.getFieldErrors()
-                    .stream()
-                    .map(error -> error.getDefaultMessage())
-                    .collect(Collectors.toList());
-            return ResponseEntity.badRequest().body(errors);
-        }
-
+    @PostMapping("")
+    public ResponseEntity createClassroom(@RequestBody @Valid RegisterClassroomRequest registerClassroomRequest) throws Exception {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         var userDetails = (MyUserDetails) authentication.getPrincipal();
         return ResponseEntity.ok(classroomService.createClassroom(registerClassroomRequest, userDetails.getId()));

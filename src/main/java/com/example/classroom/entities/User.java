@@ -35,8 +35,8 @@ public class User {
     private Set<Role> roles = new HashSet<>();
 
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL )
-    private List<UserClassroom> classrooms = new ArrayList<>();
+    @OneToMany( mappedBy = "user" )
+    private Set<UserClassroom> userClassrooms = new HashSet<>();
 
     @JsonProperty("created_at")
     @Column(name = "created_at")

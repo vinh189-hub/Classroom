@@ -31,13 +31,15 @@ public class Classroom {
 
     private String theme;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "classroom")
-//    @JoinTable(name = "users_classrooms",
-//            joinColumns = @JoinColumn(name = "classrooms_id)"),
-//            inverseJoinColumns = @JoinColumn(name = "users_id")
-//    )
-    private List<UserClassroom> users = new ArrayList<>();
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "classroom")
+////    @JoinTable(name = "users_classrooms",
+////            joinColumns = @JoinColumn(name = "classrooms_id)"),
+////            inverseJoinColumns = @JoinColumn(name = "users_id")
+////    )
+//    private List<UserClassroom> users = new ArrayList<>();
 
+    @OneToMany(mappedBy = "classroom")
+    private Set<UserClassroom> userClassrooms = new HashSet<>();
 
     @JsonProperty("created_at")
     @Column(name = "created_at")

@@ -10,6 +10,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +26,15 @@ import java.util.function.Function;
 public class JWTService {
 
     private Logger logger = LoggerFactory.getLogger(AuthService.class);
-    private static final String SECRET_KEY = System.getenv("SECRET_KEY");
+
+
+    @Autowired
+    public JWTService(Environment environment) {
+        this.environment = environment;
+    }
+
+    private Environment environment;
+
     public String extractUserID(String token){
         return extractClaim(token, Claims::getSubject);
     }
@@ -62,7 +72,7 @@ public class JWTService {
     }
 
     private Key getSignKey() {
-        byte[] key = Decoders.BASE64.decode(SECRET_KEY);
+        byte[] key = Decoders.BASE64.decode(this.environment.getProperty("SECRET_KEY"));
         return Keys.hmacShaKeyFor(key);
     }
 

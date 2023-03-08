@@ -13,6 +13,6 @@ import javax.swing.text.html.Option;
 import java.util.Optional;
 
 @Repository
-public interface ClassroomRepository extends CrudRepository<Classroom, Integer> {
+public interface ClassroomRepository extends CrudRepository<Classroom, Long> {
 
 }
