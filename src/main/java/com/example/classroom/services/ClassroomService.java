@@ -67,7 +67,7 @@ public class ClassroomService {
         var classroom = Classroom.builder()
                 .name(request.name)
                 .description(request.description)
-                .code(request.code)
+                .code(this.randomString.getAlphaNumericString(10))
                 .build();
 
         this.classroomRepository.save(classroom);
