@@ -1,6 +1,7 @@
 package com.example.classroom.controllers;
 
 import com.example.classroom.app.Response;
+import com.example.classroom.dto.JoinByClassCodeRequest;
 import com.example.classroom.dto.TeacherCreateClassroomRequest;
 import com.example.classroom.exceptions.ConflictException;
 import com.example.classroom.services.MemberService;
@@ -29,5 +30,13 @@ public class MemberController  extends BaseController{
         var userId = this.getUserId();
         this.memberService.teacherCreateClassroom(request,userId);
         return ResponseEntity.ok(new Response("success",null));
+    }
+
+
+    @PostMapping("/join-by-classcode")
+    public ResponseEntity studentJoinByClassCode(@RequestBody JoinByClassCodeRequest joinByClassCodeRequest){
+        var userID = this.getUserId();
+        this.memberService.studentJoinByClassCode(joinByClassCodeRequest, userID);
+        return ResponseEntity.ok(new Response("success", null));
     }
 }

@@ -59,4 +59,10 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         logger.error(exception.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseError(exception.getMessage()));
     }
+
+    @ExceptionHandler(ClassroomNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity handleClassroomNotFoundException(ClassroomNotFoundException classroomNotFoundException){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseError(classroomNotFoundException.getMessage()));
+    }
 }

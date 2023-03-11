@@ -9,4 +9,7 @@ public class TeacherCreateClassroomRequest {
     @NotNull()
     @NotEmpty()
     public String name;
+    public String description;
+    
+    public String roomName;
 }
