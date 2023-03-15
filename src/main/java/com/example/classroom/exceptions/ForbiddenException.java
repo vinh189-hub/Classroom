@@ -10,6 +10,7 @@ import lombok.Setter;
 //@Setter
 //@Getter
 public class ForbiddenException extends RuntimeException {
+
     public ForbiddenException(String message) {
         super(message);
     }

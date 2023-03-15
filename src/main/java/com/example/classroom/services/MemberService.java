@@ -27,7 +27,6 @@ public class MemberService {
     private AuthService authService;
     private MemberRepository memberRepository;
 
-    private ClassroomRepository classroomRepository;
 
 //    @Autowired
 //    public MemberService(ClassroomService classroomService,AuthService authService,MemberRepository memberRepository, ) {
@@ -57,10 +56,7 @@ public class MemberService {
     public void studentJoinByClassCode(JoinByClassCodeRequest joinByClassCodeRequest, Long studentId)
         throws ClassroomNotFoundException {
         var  user = this.authService.getById(studentId);
-        var checkClassroom = this.classroomRepository.findClassroomByCode(joinByClassCodeRequest.getClassCode()).orElse(null);
-        if (checkClassroom == null){
-            throw new ClassroomNotFoundException("Classroom not found");
-        }
+        var checkClassroom = classroomService.getClassroomByCode(joinByClassCodeRequest);
         var check = user.getUserClassrooms().stream().filter(item -> item.getClassroom().getCode().equals(joinByClassCodeRequest.getClassCode())).findAny();
         if (!check.isPresent()) {
             var member = UserClassroom.builder()

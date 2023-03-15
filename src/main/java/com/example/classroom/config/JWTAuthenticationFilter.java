@@ -2,6 +2,7 @@ package com.example.classroom.config;
 
 
 import com.example.classroom.entities.User;
+import com.example.classroom.exceptions.ForbiddenException;
 import com.example.classroom.repositories.AuthRepository;
 import com.example.classroom.services.MyUserDetails;
 import com.example.classroom.services.MyUserDetailsService;
@@ -43,9 +44,11 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String userID;
+
         if (authHeader == null || !authHeader.startsWith("Bearer")) {
-            filterChain.doFilter(request, response);
-            return;
+//            filterChain.doFilter(request, response);
+//            return;return
+            throw new ForbiddenException("forbidden");
         }
         jwt = authHeader.substring(7);
         userID = jwtService.extractUserID(jwt);
@@ -66,6 +69,5 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             }
         }
         filterChain.doFilter(request, response);
-
     }
 }
