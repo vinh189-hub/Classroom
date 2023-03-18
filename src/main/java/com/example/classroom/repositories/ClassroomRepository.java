@@ -15,4 +15,6 @@ import java.util.Optional;
 @Repository
 public interface ClassroomRepository extends CrudRepository<Classroom, Long> {
 
+    Optional<Classroom> findClassroomByCode(String classCode);
+
 }

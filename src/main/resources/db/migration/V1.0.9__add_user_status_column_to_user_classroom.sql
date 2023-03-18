@@ -1,0 +1,1 @@
+alter table user_classroom add column user_status boolean

@@ -3,9 +3,11 @@ package com.example.classroom.services;
 
 import com.example.classroom.app.Response;
 import com.example.classroom.dto.CreateClassroomRequest;
+import com.example.classroom.dto.JoinByClassCodeRequest;
 import com.example.classroom.dto.RegisterClassroomRequest;
 import com.example.classroom.entities.Classroom;
 import com.example.classroom.entities.User;
+import com.example.classroom.exceptions.ClassroomNotFoundException;
 import com.example.classroom.helpers.RandomString;
 import com.example.classroom.repositories.AuthRepository;
 import com.example.classroom.repositories.ClassroomRepository;
@@ -72,6 +74,13 @@ public class ClassroomService {
 
         this.classroomRepository.save(classroom);
         return classroom;
+    }
+
+
+    public Classroom getClassroomByCode(JoinByClassCodeRequest joinByClassCodeRequest){
+        return this.classroomRepository
+                .findClassroomByCode(joinByClassCodeRequest.getClassCode())
+                .orElseThrow(() -> new ClassroomNotFoundException("Classroom not found"));
     }
 
 }

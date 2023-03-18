@@ -32,7 +32,10 @@ public class UserClassroom {
     Classroom classroom;
 
     @Column(name="role")
-    private ERole role;
+    private int role;
+
+    @Column(name = "user_status")
+    private boolean userStatus;
 
     @JsonProperty("created_at")
     @Column(name = "created_at")
