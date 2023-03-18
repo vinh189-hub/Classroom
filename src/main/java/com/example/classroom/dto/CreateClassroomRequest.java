@@ -16,6 +16,5 @@ public class CreateClassroomRequest {
 
     public String description;
 
-
     public String roomName;
 }

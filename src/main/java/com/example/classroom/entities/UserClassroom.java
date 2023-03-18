@@ -34,6 +34,9 @@ public class UserClassroom {
     @Column(name="role")
     private int role;
 
+    @Column(name = "user_status")
+    private boolean userStatus;
+
     @JsonProperty("created_at")
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)

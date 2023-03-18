@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class JoinByClassCodeRequest {
 
-    @NotNull
-    @NotEmpty
+    @NotNull()
+    @NotEmpty()
     private String classCode;
 }
