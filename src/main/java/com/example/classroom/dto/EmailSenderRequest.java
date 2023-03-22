@@ -12,8 +12,6 @@ import java.util.List;
 @Data
 public class EmailSenderRequest {
 
-//    @Pattern(regexp ="^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$" )
-//    @Valid()
     @NotNull()
     private String[] email;
 

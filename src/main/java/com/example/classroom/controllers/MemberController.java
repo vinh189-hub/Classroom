@@ -49,7 +49,7 @@ public class MemberController  extends BaseController{
     }
     @PostMapping("/invite-teacher")
     public ResponseEntity inviteTeacher(@RequestBody @Valid EmailSenderRequest emailSenderRequest)
-            throws MessagingException, IOException {
+            throws MessagingException, IOException,Exception {
         this.memberService.inviteTeacherToClass(emailSenderRequest, this.getUserId());
         return ResponseEntity.ok(new Response("success",null));
     }

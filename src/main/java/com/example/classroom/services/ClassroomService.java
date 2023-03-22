@@ -83,4 +83,8 @@ public class ClassroomService {
                 .orElseThrow(() -> new ClassroomNotFoundException("Classroom not found"));
     }
 
+    public Classroom getClassroomById(int id){
+        return this.classroomRepository.findById(id).orElseThrow(() -> new ClassroomNotFoundException("Classroom not found"));
+    }
+
 }
