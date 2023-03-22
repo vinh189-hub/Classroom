@@ -1,42 +1,41 @@
 package com.example.classroom.entities;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.example.classroom.enums.ERole;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import java.util.*;
+import java.util.Date;
 
+@Entity
+@Builder
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Setter
-@Getter
-@Builder
-@Table(name = "users")
-public class User {
+public class UserClassroom {
     @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+
     private Long id;
-    private String email;
-    private String username;
-    @JsonIgnore
-    private String password;
 
-    private int status;
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "users_roles",
-            joinColumns = @JoinColumn(name = "users_id"),
-            inverseJoinColumns = @JoinColumn(name = "roles_id"))
-    private Set<Role> roles = new HashSet<>();
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    User user;
 
+    @ManyToOne
+    @JoinColumn(name="classroom_id")
+    Classroom classroom;
 
-    @OneToMany( mappedBy = "user" )
-    private Set<UserClassroom> userClassrooms = new HashSet<>();
+    @Column(name="role")
+    private int role;
+
+    @Column(name = "user_status")
+    private boolean userStatus;
 
     @JsonProperty("created_at")
     @Column(name = "created_at")
