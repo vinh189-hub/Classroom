@@ -4,6 +4,7 @@ import com.example.classroom.app.Response;
 import com.example.classroom.dto.EmailSenderRequest;
 import com.example.classroom.dto.JoinByClassCodeRequest;
 import com.example.classroom.dto.TeacherCreateClassroomRequest;
+import com.example.classroom.enums.ERole;
 import com.example.classroom.exceptions.ConflictException;
 import com.example.classroom.services.EmailSenderService;
 import com.example.classroom.services.MemberService;
@@ -14,10 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
@@ -26,6 +24,7 @@ import java.io.IOException;
 public class MemberController  extends BaseController{
 
     private MemberService memberService;
+
 
     @Autowired
     public MemberController(MemberService memberService) {
@@ -53,4 +52,5 @@ public class MemberController  extends BaseController{
         this.memberService.inviteTeacherToClass(emailSenderRequest, this.getUserId());
         return ResponseEntity.ok(new Response("success",null));
     }
+
 }

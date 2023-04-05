@@ -27,4 +27,5 @@ public class UserService {
         return this.userRepository.findByEmailIn(list).orElseThrow(() -> new Exception("not found"));
     }
 
+
 }

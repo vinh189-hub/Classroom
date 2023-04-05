@@ -1,45 +1,43 @@
 package com.example.classroom.entities;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 
+@Entity
+@Table(name = "posts")
+@Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Setter
-@Getter
-@Builder
-@Table(name = "users")
-public class User {
+public class Post {
+
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String email;
-    private String username;
-    @JsonIgnore
-    private String password;
+    
+    private String description;
 
-    private int status;
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "users_roles",
-            joinColumns = @JoinColumn(name = "users_id"),
-            inverseJoinColumns = @JoinColumn(name = "roles_id"))
-    private Set<Role> roles = new HashSet<>();
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "user_id")
+    private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "classroom_id")
+    private Classroom classroom;
 
-    @OneToMany( mappedBy = "user" )
-    private Set<UserClassroom> userClassrooms = new HashSet<>();
-
-    @OneToMany(mappedBy = "user")
-    private List<Post> postList = new ArrayList<>();
+//    @OneToMany(mappedBy = "post")
+//    private List<File> fileList;
 
     @JsonProperty("created_at")
     @Column(name = "created_at")
@@ -63,5 +61,4 @@ public class User {
     public void onUpdate() {
         this.updatedAt = new Date();
     }
-
 }

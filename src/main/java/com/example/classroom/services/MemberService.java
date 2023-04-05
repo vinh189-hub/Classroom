@@ -4,7 +4,6 @@ import com.example.classroom.dto.CreateClassroomRequest;
 import com.example.classroom.dto.EmailSenderRequest;
 import com.example.classroom.dto.JoinByClassCodeRequest;
 import com.example.classroom.dto.TeacherCreateClassroomRequest;
-import com.example.classroom.entities.Role;
 import com.example.classroom.entities.User;
 import com.example.classroom.entities.UserClassroom;
 import com.example.classroom.enums.ERole;
@@ -17,14 +16,12 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jobrunr.scheduling.JobScheduler;
-import org.jobrunr.spring.autoconfigure.JobRunrProperties;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 
 @Service
@@ -56,42 +53,25 @@ public class MemberService {
             log.info("teacher has class");
             throw new ConflictException("teacher has class");
         }
-        var createClassroomRequest = CreateClassroomRequest.builder()
-                .name(request.name)
-                .description(request.description)
-                .roomName(request.roomName)
-                .build();
+        var createClassroomRequest = CreateClassroomRequest.builder().name(request.name).description(request.description).roomName(request.roomName).build();
         var classroom = this.classroomService.create(createClassroomRequest);
 
-        var member = UserClassroom.builder()
-                .classroom(classroom)
-                .user(user)
-                .role(ERole.TEACHER.getValue())
-                .userStatus(true)
-                .build();
+        var member = UserClassroom.builder().classroom(classroom).user(user).role(ERole.TEACHER.getValue()).userStatus(true).build();
         this.memberRepository.save(member);
     }
 
-    public void studentJoinByClassCode(JoinByClassCodeRequest joinByClassCodeRequest, Long studentId)
-            throws ClassroomNotFoundException {
+    public void studentJoinByClassCode(JoinByClassCodeRequest joinByClassCodeRequest, Long studentId) throws ClassroomNotFoundException {
         var user = this.authService.getById(studentId);
         var checkClassroom = classroomService.getClassroomByCode(joinByClassCodeRequest);
         var check = user.getUserClassrooms().stream().filter(item -> item.getClassroom().getCode().equals(joinByClassCodeRequest.getClassCode())).findAny();
         if (!check.isPresent()) {
-            var member = UserClassroom.builder()
-                    .classroom(checkClassroom)
-                    .user(user)
-                    .role(ERole.STUDENT.getValue())
-                    .userStatus(true)
-                    .build();
+            var member = UserClassroom.builder().classroom(checkClassroom).user(user).role(ERole.STUDENT.getValue()).userStatus(true).build();
             this.memberRepository.save(member);
         }
     }
 
-    public void inviteTeacherToClass(EmailSenderRequest emailSenderRequest, Long id)
-            throws MessagingException, IOException, Exception {
-        var validEmail = Arrays.stream(emailSenderRequest.getEmail())
-                .filter(ValidateEmail::validate);
+    public void inviteTeacherToClass(EmailSenderRequest emailSenderRequest, Long id) throws Exception, AuthorizationServiceException {
+        var validEmail = Arrays.stream(emailSenderRequest.getEmail()).filter(ValidateEmail::validate);
         var validEmailArr = validEmail.toList();
         var user = this.authService.getMe(id);
         var classroom = this.classroomService.getClassroomById(emailSenderRequest.getClassroomId());
@@ -113,7 +93,14 @@ public class MemberService {
     }
 
     public void sendEmail(List<User> users) {
-        var emailSender =  users.stream().map(item -> item.getEmail()).toArray(String[]::new);
+        var emailSender = users.stream().map(item -> item.getEmail()).toArray(String[]::new);
         this.jobScheduler.enqueue(() -> this.emailSenderService.sendEmailWithAttachment(emailSender));
+    }
+
+    public int getRoleUserClassroom(Long userId, int classroomId) {
+        var user = this.authService.getById(userId);
+        var classroom = this.classroomService.getClassroomById(classroomId);
+        var res = this.memberRepository.findByUserAndClassroom(user, classroom).orElseThrow();
+        return res.getRole();
     }
 }
