@@ -1,5 +1,6 @@
 package com.example.classroom.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
@@ -32,10 +33,10 @@ public class Classroom {
     private String theme;
 
     @OneToMany(mappedBy = "classroom")
-    private Set<UserClassroom> userClassrooms = new HashSet<>();
+    private Set<UserClassroom> userClassrooms;
 
     @OneToMany(mappedBy = "classroom")
-    private List<Post> postList = new ArrayList<>();
+    private List<Post> postList;
 
     @JsonProperty("created_at")
     @Column(name = "created_at")

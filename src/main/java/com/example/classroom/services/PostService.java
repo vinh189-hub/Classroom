@@ -1,13 +1,10 @@
 package com.example.classroom.services;
 
-import com.example.classroom.controllers.PostController;
+import com.example.classroom.app.Response;
 import com.example.classroom.dto.CreatePostRequest;
 import com.example.classroom.entities.File;
 import com.example.classroom.entities.Post;
 import com.example.classroom.repositories.PostRepository;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +38,14 @@ public class PostService {
         this.fileService = fileService;
         this.fileStorageService = fileStorageService;
     }
+
+   public Response getAllByClassroom(int classroomId){
+        var classroom = this.classroomService.getClassroomById(classroomId);
+//        var listPost = this.postRepository.findAllByClassroom(classroom).orElseThrow();
+       var listPost = this.postRepository.findAllByClassroom(classroom);
+       var listClassroom = this.classroomService.getListClassroom();
+        return new Response("success", classroom );
+   }
 
     public void createPost(CreatePostRequest createPostRequest, List<MultipartFile> multipartFiles, Long userId) {
         var description = createPostRequest.getDescription();

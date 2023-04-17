@@ -87,7 +87,7 @@ public class MemberService {
 
         if (users.size() > 0) {
             var listMembersNeedCreate = users.stream().map(item -> UserClassroom.builder().classroom(classroom).user(item).role(ERole.TEACHER.getValue()).userStatus(false).build()).toList();
-            this.sendEmail(users);
+//            this.sendEmail(users);
             this.memberRepository.saveAll(listMembersNeedCreate);
         }
     }

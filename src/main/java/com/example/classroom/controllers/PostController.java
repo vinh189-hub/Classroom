@@ -32,9 +32,11 @@ public class PostController extends BaseController {
 
         this.postService.createPost(createPostRequest, multipartFile, this.getUserId());
         return ResponseEntity.ok("success");
-//        for(MultipartFile file: multipartFile){
-//            logger.info(file.getOriginalFilename());
-//        }
-//        return ResponseEntity.ok(new Response<>("oke", multipartFile.size()));
+    }
+
+    @GetMapping("/get-all-post")
+    public ResponseEntity getAllPostByClassroom(@RequestParam("classroomId") int classroomId){
+        var data = this.postService.getAllByClassroom(classroomId);
+        return ResponseEntity.ok(data);
     }
 }

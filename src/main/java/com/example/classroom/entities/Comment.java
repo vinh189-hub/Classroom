@@ -4,42 +4,30 @@ package com.example.classroom.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import java.util.*;
+import java.util.Date;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
-@Setter
-@Getter
-@Builder
-@Table(name = "users")
-public class User {
+@Data
+@Table(name = "comments")
+public class Comment {
+
     @Id
-    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String email;
-    private String username;
+    private long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id")
     @JsonIgnore
-    private String password;
+    private Post post;
 
-    private int status;
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "users_roles",
-            joinColumns = @JoinColumn(name = "users_id"),
-            inverseJoinColumns = @JoinColumn(name = "roles_id"))
-    private Set<Role> roles = new HashSet<>();
-
-
-    @OneToMany( mappedBy = "user" )
-    private Set<UserClassroom> userClassrooms = new HashSet<>();
-
-//    @OneToMany(mappedBy = "user")
-//    private List<Post> postList = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @JsonIgnore
+    private User user;
 
     @JsonProperty("created_at")
     @Column(name = "created_at")
@@ -63,5 +51,4 @@ public class User {
     public void onUpdate() {
         this.updatedAt = new Date();
     }
-
 }

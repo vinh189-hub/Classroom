@@ -17,6 +17,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -85,6 +88,12 @@ public class ClassroomService {
 
     public Classroom getClassroomById(int id){
         return this.classroomRepository.findById(id).orElseThrow(() -> new ClassroomNotFoundException("Classroom not found"));
+    }
+
+    public List<Classroom> getListClassroom(){
+        List<Classroom> res = new ArrayList<>();
+        this.classroomRepository.findAll().forEach(res::add);
+        return res;
     }
 
 }

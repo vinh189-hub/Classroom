@@ -1,6 +1,5 @@
 package com.example.classroom.entities;
 
-import com.example.classroom.enums.ERole;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -17,6 +16,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "user_classroom")
 public class UserClassroom {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
