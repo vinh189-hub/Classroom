@@ -12,4 +12,8 @@ public interface MemberRepository extends CrudRepository<UserClassroom,Long> {
     Optional<List<UserClassroom>> findByUserInAndClassroom(List<User> list, Classroom classroom);
 
     Optional<UserClassroom> findByUserAndClassroom(User user, Classroom classroom);
+
+    Optional<List<UserClassroom>> findByUser(User user);
+
+    Optional<List<UserClassroom>> findByClassroomAndRole(Classroom classroom, int role);
 }

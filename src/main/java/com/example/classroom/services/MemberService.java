@@ -1,9 +1,12 @@
 package com.example.classroom.services;
 
+import com.example.classroom.app.AllClassroomByUserIdResponse;
+import com.example.classroom.app.Response;
 import com.example.classroom.dto.CreateClassroomRequest;
 import com.example.classroom.dto.EmailSenderRequest;
 import com.example.classroom.dto.JoinByClassCodeRequest;
 import com.example.classroom.dto.TeacherCreateClassroomRequest;
+import com.example.classroom.entities.Classroom;
 import com.example.classroom.entities.User;
 import com.example.classroom.entities.UserClassroom;
 import com.example.classroom.enums.ERole;
@@ -20,8 +23,7 @@ import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 
 @Service
@@ -102,5 +104,13 @@ public class MemberService {
         var classroom = this.classroomService.getClassroomById(classroomId);
         var res = this.memberRepository.findByUserAndClassroom(user, classroom).orElseThrow();
         return res.getRole();
+    }
+
+    public List<Classroom> getAllClassroomByUserId(long userId){
+        List<Classroom> listClassroom = new ArrayList<>();
+        var user = this.authService.getById(userId);
+        var data = this.memberRepository.findByUser(user).orElseThrow();
+        data.forEach(item -> listClassroom.add(item.getClassroom()));
+        return listClassroom;
     }
 }

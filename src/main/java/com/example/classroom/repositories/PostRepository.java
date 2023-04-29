@@ -23,4 +23,6 @@ public interface PostRepository extends CrudRepository<Post, Long> {
     @Query(name = "select c from posts c where c.id = :id")
     Optional<Post> getPostById(@Param("id")int id);
 
+    Optional<List<Post>> findByClassroom(Classroom classroom);
+
 }

@@ -36,10 +36,8 @@ public class User {
 
 
     @OneToMany( mappedBy = "user" )
-    private Set<UserClassroom> userClassrooms = new HashSet<>();
-
-//    @OneToMany(mappedBy = "user")
-//    private List<Post> postList = new ArrayList<>();
+    @JsonIgnore
+    private Set<UserClassroom> userClassrooms;
 
     @JsonProperty("created_at")
     @Column(name = "created_at")

@@ -7,6 +7,7 @@ import com.example.classroom.dto.JoinByClassCodeRequest;
 import com.example.classroom.dto.RegisterClassroomRequest;
 import com.example.classroom.entities.Classroom;
 import com.example.classroom.entities.User;
+import com.example.classroom.entities.UserClassroom;
 import com.example.classroom.exceptions.ClassroomNotFoundException;
 import com.example.classroom.helpers.RandomString;
 import com.example.classroom.repositories.AuthRepository;
@@ -15,6 +16,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,46 +27,33 @@ import java.util.List;
 @Slf4j
 public class ClassroomService {
 
-
-//    @Autowired
     private AuthRepository authRepository;
-//    @Autowired
     private ClassroomRepository classroomRepository;
 
-//    @Autowired
     private RandomString randomString;
 
+    private MemberService memberService;
+
     @Autowired
-    public ClassroomService(AuthRepository authRepository, ClassroomRepository classroomRepository,RandomString randomString) {
+    public ClassroomService(AuthRepository authRepository,
+                            ClassroomRepository classroomRepository,
+                            RandomString randomString,
+                            @Lazy MemberService memberService) {
         this.authRepository = authRepository;
         this.classroomRepository = classroomRepository;
         this.randomString = randomString;
+        this.memberService = memberService;
     }
 
 
     @Transactional(rollbackOn = Exception.class)
     public Response createClassroom(RegisterClassroomRequest registerClassroomRequest, Long id) throws Exception {
-//        User user = this.authRepository.findById(id).orElseThrow();
-//        UserClassroom userClassroom = new UserClassroom();
-//        userClassroom.setRole(2);
-//        userClassroom.setUser(user);
-//        var classroom = Classroom.builder()
-//                .name(registerClassroomRequest.getName())
-//                .description(registerClassroomRequest.getDescription())
-//                .code(randomString.getAlphaNumericString(10))
-//                .theme(null)
-//                .build();
-//        this.classroomRepository.save(classroom);
-
-//        return new Response("tao lop hoc thanh cong",classroom);
         var classroom = Classroom.builder()
                 .name(registerClassroomRequest.getName())
                 .build();
         this.classroomRepository.save(classroom);
         log.info("id",classroom.getId());
         throw new Exception("cancel");
-
-//        return null;
     }
 
     public Classroom create(CreateClassroomRequest request)
@@ -74,11 +63,9 @@ public class ClassroomService {
                 .description(request.description)
                 .code(this.randomString.getAlphaNumericString(10))
                 .build();
-
         this.classroomRepository.save(classroom);
         return classroom;
     }
-
 
     public Classroom getClassroomByCode(JoinByClassCodeRequest joinByClassCodeRequest){
         return this.classroomRepository
@@ -95,5 +82,10 @@ public class ClassroomService {
         this.classroomRepository.findAll().forEach(res::add);
         return res;
     }
+
+    public List<Classroom> getAllClassroomByUserId(long userId){
+        return this.memberService.getAllClassroomByUserId(userId);
+    }
+
 
 }

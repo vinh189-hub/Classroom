@@ -38,6 +38,7 @@ public class Classroom {
     @OneToMany(mappedBy = "classroom")
     private List<Post> postList;
 
+
     @JsonProperty("created_at")
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)

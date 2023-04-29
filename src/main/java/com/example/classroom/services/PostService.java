@@ -2,8 +2,10 @@ package com.example.classroom.services;
 
 import com.example.classroom.app.Response;
 import com.example.classroom.dto.CreatePostRequest;
+import com.example.classroom.entities.Classroom;
 import com.example.classroom.entities.File;
 import com.example.classroom.entities.Post;
+import com.example.classroom.exceptions.PostNotFoundException;
 import com.example.classroom.repositories.PostRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,5 +71,13 @@ public class PostService {
         } catch (Exception e) {
             logger.info("Failed o dayyyyyyyyyyyyyyyy");
         }
+    }
+
+    public Post getPostById(Long postId){
+        return this.postRepository.findById(postId).orElseThrow(()-> new PostNotFoundException("Post not found"));
+    }
+
+    public List<Post> getListPostInClassroom(Classroom classroom){
+        return this.postRepository.findByClassroom(classroom).orElseThrow();
     }
 }
