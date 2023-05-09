@@ -2,7 +2,6 @@ package com.example.classroom.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,35 +10,28 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 
 @Entity
+@Table(name = "submissions")
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
-@Table(name = "classrooms")
-public class Classroom {
-
+@AllArgsConstructor
+@NoArgsConstructor
+public class Submit {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private String name;
-    private String code;
-    private String description;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    private String theme;
-
-    @OneToMany(mappedBy = "classroom")
-    private Set<UserClassroom> userClassrooms;
-
-    @OneToMany(mappedBy = "classroom")
-    private List<Post> postList;
-
-    @OneToMany(mappedBy = "classroom")
-    private List<Assignment> assignmentList;
+    @ManyToOne
+    @JoinColumn(name = "assignment_id")
+    private Assignment assignment;
 
     @JsonProperty("created_at")
     @Column(name = "created_at")
@@ -63,5 +55,4 @@ public class Classroom {
     public void onUpdate() {
         this.updatedAt = new Date();
     }
-
 }

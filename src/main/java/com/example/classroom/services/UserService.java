@@ -27,5 +27,9 @@ public class UserService {
         return this.userRepository.findByEmailIn(list).orElseThrow(() -> new Exception("not found"));
     }
 
+    public User getById(long userId){
+        return this.userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
+    }
+
 
 }

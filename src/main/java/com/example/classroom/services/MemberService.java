@@ -12,6 +12,7 @@ import com.example.classroom.entities.UserClassroom;
 import com.example.classroom.enums.ERole;
 import com.example.classroom.exceptions.ClassroomNotFoundException;
 import com.example.classroom.exceptions.ConflictException;
+import com.example.classroom.exceptions.NoSuchElementException;
 import com.example.classroom.helpers.ValidateEmail;
 import com.example.classroom.repositories.MemberRepository;
 import jakarta.mail.MessagingException;
@@ -102,7 +103,7 @@ public class MemberService {
     public int getRoleUserClassroom(Long userId, int classroomId) {
         var user = this.authService.getById(userId);
         var classroom = this.classroomService.getClassroomById(classroomId);
-        var res = this.memberRepository.findByUserAndClassroom(user, classroom).orElseThrow();
+        var res = this.memberRepository.findByUserAndClassroom(user, classroom).orElseThrow(() -> new NoSuchElementException("User not in this Classroom"));
         return res.getRole();
     }
 

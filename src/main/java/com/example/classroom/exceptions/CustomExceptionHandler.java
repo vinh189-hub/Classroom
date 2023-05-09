@@ -76,4 +76,10 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity handlePostNotFoundException(PostNotFoundException postNotFoundException){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseError(postNotFoundException.getMessage()));
     }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    @ResponseStatus(HttpStatus.BAD_GATEWAY)
+    public ResponseEntity hanleNoSuchElementException(NoSuchElementException noSuchElementException){
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(new ResponseError(noSuchElementException.getMessage()));
+    }
 }

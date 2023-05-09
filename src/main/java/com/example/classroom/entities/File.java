@@ -24,4 +24,9 @@ public class File {
     @JoinColumn(name = "post_id")
     @JsonIgnore
     private Post post;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "assignment_id")
+    @JsonIgnore
+    private Assignment assignment;
 }
