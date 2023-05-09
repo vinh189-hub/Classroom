@@ -1,0 +1,1 @@
+alter table assignments add column classroom_id integer

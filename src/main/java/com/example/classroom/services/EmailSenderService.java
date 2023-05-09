@@ -5,6 +5,8 @@ import com.example.classroom.app.Response;
 import com.example.classroom.helpers.ValidateEmail;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import lombok.extern.slf4j.Slf4j;
+import org.jobrunr.jobs.annotations.Job;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -17,15 +19,21 @@ import java.io.IOException;
 import java.util.Arrays;
 
 @Service
+@Slf4j
 public class EmailSenderService {
 
-    @Autowired
     private JavaMailSender javaMailSender;
 
-    @Autowired
     private TemplateEngine templateEngine;
 
-    public void sendEmailWithAttachment(String[] email) throws MessagingException, IOException {
+    @Autowired
+    public EmailSenderService(JavaMailSender javaMailSender, TemplateEngine templateEngine) {
+        this.javaMailSender = javaMailSender;
+        this.templateEngine = templateEngine;
+    }
+
+    @Job(name = "send-email-with-attachment", retries = 3)
+    public void sendEmailWithAttachment(String[] email) throws Exception {
         MimeMessage msg = javaMailSender.createMimeMessage();
         // true = multipart message
         MimeMessageHelper helper = new MimeMessageHelper(msg, true);

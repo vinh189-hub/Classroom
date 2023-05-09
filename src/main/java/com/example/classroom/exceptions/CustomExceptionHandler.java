@@ -3,17 +3,13 @@ package com.example.classroom.exceptions;
 import com.example.classroom.app.ResponseError;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
-import jdk.jfr.Experimental;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -73,5 +69,17 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ResponseEntity handleUnexpectedTypeException(UnexpectedTypeException unexpectedTypeException){
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ResponseError(unexpectedTypeException.getMessage()));
+    }
+
+    @ExceptionHandler(PostNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity handlePostNotFoundException(PostNotFoundException postNotFoundException){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseError(postNotFoundException.getMessage()));
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    @ResponseStatus(HttpStatus.BAD_GATEWAY)
+    public ResponseEntity hanleNoSuchElementException(NoSuchElementException noSuchElementException){
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(new ResponseError(noSuchElementException.getMessage()));
     }
 }

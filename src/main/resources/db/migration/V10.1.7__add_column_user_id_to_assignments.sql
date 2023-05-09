@@ -1,0 +1,1 @@
+alter table assignments add column user_id integer
