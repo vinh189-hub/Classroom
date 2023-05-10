@@ -33,6 +33,11 @@ public class Submit {
     @JoinColumn(name = "assignment_id")
     private Assignment assignment;
 
+    @OneToMany(mappedBy = "submit")
+    private List<File> fileList;
+
+    private Long submissionDate;
+
     @JsonProperty("created_at")
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)

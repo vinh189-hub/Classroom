@@ -34,6 +34,9 @@ public class Assignment {
     @OneToMany(mappedBy = "assignment")
     private List<File> fileList;
 
+    @OneToMany(mappedBy = "assignment")
+    private List<Submit> submitList;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
