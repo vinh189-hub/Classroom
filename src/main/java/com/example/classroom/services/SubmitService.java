@@ -2,10 +2,13 @@ package com.example.classroom.services;
 
 
 import com.example.classroom.dto.SubmitRequest;
+import com.example.classroom.entities.Assignment;
 import com.example.classroom.entities.File;
 import com.example.classroom.entities.Submit;
+import com.example.classroom.entities.User;
 import com.example.classroom.enums.ERole;
 import com.example.classroom.exceptions.ForbiddenException;
+import com.example.classroom.exceptions.NoSuchElementException;
 import com.example.classroom.helpers.ConvertToUnixTime;
 import com.example.classroom.repositories.SubmitRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,10 +50,14 @@ public class SubmitService {
         var userClassroom = this.memberService.getUserClassroomByUserAndClassroom(userId, submitRequest.getClassroomId());
         var classroom = userClassroom.getClassroom();
         var user = userClassroom.getUser();
-//        if(userClassroom.getRole() == ERole.TEACHER.getValue()){
-//            throw new ForbiddenException("Cai nay danh cho sinh vien thoi");
-//        }
+        if(userClassroom.getRole() == ERole.TEACHER.getValue()){
+            throw new ForbiddenException("Cai nay danh cho sinh vien thoi");
+        }
         var assignment = this.assignmentService.getAssignmentByIdAndClassroom(submitRequest.getAssignmentId(), classroom);
+        var submitCheck = this.getByAssignmentAndUser(assignment, user);
+        if(submitCheck != null){
+            throw new ForbiddenException("Khong duoc sua nua");
+        }
         var date = ConvertToUnixTime.convertUnixTime(submitRequest.getSubmissionDate());
         var submit = Submit.builder().user(user).assignment(assignment).submissionDate(date).build();
         List<File> list = new ArrayList<>();
@@ -66,5 +73,9 @@ public class SubmitService {
         } catch (Exception e) {
 
         }
+    }
+
+    public Submit getByAssignmentAndUser(Assignment assignment, User user){
+        return this.submitRepository.findByAssignmentAndAndUser(assignment, user).orElse(null);
     }
 }

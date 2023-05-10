@@ -1,5 +1,6 @@
 package com.example.classroom.controllers;
 
+import com.example.classroom.app.Response;
 import com.example.classroom.dto.SubmitRequest;
 import com.example.classroom.services.SubmitService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,6 @@ public class SubmitController extends BaseController {
             ){
         var userId = this.getUserId();
         this.submitService.create(submitRequest,userId, multipartFile);
-        return ResponseEntity.ok("submitRequest");
+        return ResponseEntity.ok(new Response<>("success", null));
     }
 }
