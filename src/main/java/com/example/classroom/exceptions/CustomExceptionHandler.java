@@ -79,7 +79,13 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(NoSuchElementException.class)
     @ResponseStatus(HttpStatus.BAD_GATEWAY)
-    public ResponseEntity hanleNoSuchElementException(NoSuchElementException noSuchElementException){
+    public ResponseEntity handleNoSuchElementException(NoSuchElementException noSuchElementException){
         return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(new ResponseError(noSuchElementException.getMessage()));
+    }
+
+    @ExceptionHandler(MalformedJwtException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ResponseEntity handleMalformedJwtException(MalformedJwtException malformedJwtException){
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ResponseError(malformedJwtException.getMessage()));
     }
 }
