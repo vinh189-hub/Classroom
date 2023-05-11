@@ -8,7 +8,6 @@ import com.example.classroom.entities.Submit;
 import com.example.classroom.entities.User;
 import com.example.classroom.enums.ERole;
 import com.example.classroom.exceptions.ForbiddenException;
-import com.example.classroom.exceptions.NoSuchElementException;
 import com.example.classroom.helpers.ConvertToUnixTime;
 import com.example.classroom.repositories.SubmitRepository;
 import org.springframework.beans.factory.annotation.Autowired;

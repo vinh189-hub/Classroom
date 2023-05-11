@@ -120,4 +120,8 @@ public class MemberService {
         data.forEach(item -> listClassroom.add(item.getClassroom()));
         return listClassroom;
     }
+
+    public List<UserClassroom> getAllUserByClassroomAndRole(Classroom classroom, int role){
+       return this.memberRepository.findByClassroomAndRole(classroom, role).orElse(null);
+    }
 }
