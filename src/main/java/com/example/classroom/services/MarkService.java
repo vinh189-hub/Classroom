@@ -61,4 +61,10 @@ public class MarkService {
         this.markRepository.saveAll(listStudentScored);
     }
 
+    public List<Mark> getAll(){
+        List<Mark> list = new ArrayList<>();
+        this.markRepository.findAll().forEach(list::add);
+        return  list;
+    }
+
 }

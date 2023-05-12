@@ -2,6 +2,7 @@ package com.example.classroom.controllers;
 
 import com.example.classroom.app.Response;
 import com.example.classroom.dto.CreatePostRequest;
+import com.example.classroom.dto.UpdatePostRequest;
 import com.example.classroom.services.PostService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -39,4 +40,12 @@ public class PostController extends BaseController {
         var data = this.postService.getAllByClassroom(classroomId);
         return ResponseEntity.ok(data);
     }
+
+    @PutMapping("/update-post")
+    public ResponseEntity updatePost(@ModelAttribute UpdatePostRequest updatePostRequest,@RequestParam("files") List<MultipartFile> multipartFiles){
+        var userId = this.getUserId();
+        this.postService.updatePost(updatePostRequest, userId, multipartFiles);
+        return ResponseEntity.ok("success");
+    }
+
 }

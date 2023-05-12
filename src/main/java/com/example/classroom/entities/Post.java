@@ -66,6 +66,7 @@ public class Post {
 
     @PreUpdate
     public void onUpdate() {
+        this.createdAt = this.getCreatedAt();
         this.updatedAt = new Date();
     }
 }

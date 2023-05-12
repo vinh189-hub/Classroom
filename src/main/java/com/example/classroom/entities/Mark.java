@@ -24,7 +24,7 @@ public class Mark {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonIgnore
+//    @JsonIgnore
     private User user;
 
     @ManyToOne
