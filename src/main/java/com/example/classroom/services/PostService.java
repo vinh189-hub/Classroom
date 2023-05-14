@@ -143,4 +143,9 @@ public class PostService {
     private void delete(long id){
         this.postRepository.deleteById(id);
     }
+
+    public Post getPostByIdAndClassroom(long id, int classroomId){
+        var classroom = this.classroomService.getClassroomById(classroomId);
+        return  this.postRepository.findByIdAndClassroom(id, classroom).orElseThrow(() -> new NoSuchElementException("Not Found Post"));
+    }
 }
