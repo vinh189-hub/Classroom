@@ -2,10 +2,13 @@ package com.example.classroom.services;
 
 import com.example.classroom.app.Response;
 import com.example.classroom.dto.CreatePostRequest;
+import com.example.classroom.dto.DeletePostRequest;
 import com.example.classroom.dto.UpdatePostRequest;
 import com.example.classroom.entities.Classroom;
 import com.example.classroom.entities.File;
 import com.example.classroom.entities.Post;
+import com.example.classroom.entities.User;
+import com.example.classroom.enums.ERole;
 import com.example.classroom.exceptions.NoSuchElementException;
 import com.example.classroom.exceptions.PostNotFoundException;
 import com.example.classroom.repositories.PostRepository;
@@ -29,6 +32,8 @@ public class PostService {
     FileService fileService;
     MemberService memberService;
 
+    CommentService commentService;
+
     @Autowired
     public PostService(
             PostRepository postRepository,
@@ -46,18 +51,23 @@ public class PostService {
         this.fileStorageService = fileStorageService;
     }
 
+    @Autowired
+    public void setCommentService(CommentService commentService){
+        this.commentService = commentService;
+    }
+
     public Response getAllByClassroom(int classroomId) {
         var classroom = this.classroomService.getClassroomById(classroomId);
-//        var listPost = this.postRepository.findAllByClassroom(classroom).orElseThrow();
         var listPost = this.postRepository.findAllByClassroom(classroom);
         var listClassroom = this.classroomService.getListClassroom();
         return new Response("success", classroom);
     }
 
     public void createPost(CreatePostRequest createPostRequest, List<MultipartFile> multipartFiles, Long userId) {
+        var userClassroom = this.memberService.getUserClassroomByUserAndClassroom(userId, createPostRequest.getClassroomId());
         var description = createPostRequest.getDescription();
-        var user = this.authService.getById(userId);
-        var classroom = this.classroomService.getClassroomById(createPostRequest.getClassroomId());
+        var user = userClassroom.getUser();
+        var classroom = userClassroom.getClassroom();
         var post = Post.builder()
                 .description(description)
                 .user(user)
@@ -88,7 +98,7 @@ public class PostService {
 
     public void updatePost(UpdatePostRequest updatePostRequest, long userId, List<MultipartFile> multipartFiles) {
         var userClassroom = this.memberService.getUserClassroomByUserAndClassroom(userId, updatePostRequest.getClassroomId());
-        var post = this.postRepository.findByIdAndUserAndClassroom(updatePostRequest.getPostId(), userClassroom.getUser(), userClassroom.getClassroom()).orElseThrow(() -> new NoSuchElementException("Post Not Found"));
+        var post = this.getPostByIdAndUserAndClassroom(updatePostRequest.getPostId(), userClassroom.getUser(), userClassroom.getClassroom());
         var data = Post.builder()
                 .id(post.getId())
                 .description(updatePostRequest.getDescription())
@@ -110,6 +120,27 @@ public class PostService {
         } catch (Exception e) {
 
         }
+    }
 
+    public void deletePost(DeletePostRequest deletePostRequest, long userId){
+        var userClassroom = this.memberService.getUserClassroomByUserAndClassroom(userId, deletePostRequest.getClassroomId());
+        Post post;
+        if (userClassroom.getRole() == ERole.TEACHER.getValue()){
+            post = this.postRepository.findByIdAndClassroom(deletePostRequest.getPostId(), userClassroom.getClassroom()).orElseThrow(() -> new NoSuchElementException("Not Found Post in this Classroom"));
+        }else{
+            post = this.getPostByIdAndUserAndClassroom(deletePostRequest.getPostId(), userClassroom.getUser(), userClassroom.getClassroom());
+        }
+        this.commentService.deleteAllCommentByPost(post);
+        this.fileService.deleteAllByPost(post);
+        this.delete(deletePostRequest.getPostId());
+
+    }
+
+    private Post getPostByIdAndUserAndClassroom(long postId, User user, Classroom classroom){
+        return this.postRepository.findByIdAndUserAndClassroom(postId, user, classroom).orElseThrow(() -> new NoSuchElementException("Not Found Post"));
+    }
+
+    private void delete(long id){
+        this.postRepository.deleteById(id);
     }
 }

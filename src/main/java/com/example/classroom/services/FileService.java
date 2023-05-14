@@ -22,4 +22,6 @@ public class FileService {
     public void deleteAllByPost(Post post){
         this.fileRepository.deleteAllByPost(post);
     }
+
+
 }

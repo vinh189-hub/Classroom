@@ -43,6 +43,7 @@ public class Post {
     private List<File> fileList;
 
     @OneToMany(mappedBy = "post")
+
     private List<Comment> commentList;
 
 

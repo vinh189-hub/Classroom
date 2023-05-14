@@ -2,6 +2,7 @@ package com.example.classroom.controllers;
 
 import com.example.classroom.app.Response;
 import com.example.classroom.dto.CreatePostRequest;
+import com.example.classroom.dto.DeletePostRequest;
 import com.example.classroom.dto.UpdatePostRequest;
 import com.example.classroom.services.PostService;
 import jakarta.validation.Valid;
@@ -46,6 +47,13 @@ public class PostController extends BaseController {
         var userId = this.getUserId();
         this.postService.updatePost(updatePostRequest, userId, multipartFiles);
         return ResponseEntity.ok("success");
+    }
+
+    @DeleteMapping("/delete-post")
+    public ResponseEntity deletePost(@RequestBody DeletePostRequest deletePostRequest){
+        var userId = this.getUserId();
+        this.postService.deletePost(deletePostRequest, userId);
+        return ResponseEntity.ok("Success");
     }
 
 }

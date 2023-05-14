@@ -3,9 +3,11 @@ package com.example.classroom.services;
 
 import com.example.classroom.dto.CommentRequest;
 import com.example.classroom.entities.Comment;
+import com.example.classroom.entities.Post;
 import com.example.classroom.exceptions.PostNotFoundException;
 import com.example.classroom.repositories.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -26,15 +28,21 @@ public class CommentService {
     public CommentService(UserService userService,
                           AuthService authService,
                           ClassroomService classroomService,
-                          PostService postService,
+//                          PostService postService,
                           CommentRepository commentRepository
                           ){
         this.userService = userService;
         this.authService = authService;
         this.classroomService = classroomService;
-        this.postService = postService;
+//        this.postService = postService;
         this.commentRepository = commentRepository;
     }
+
+    @Autowired
+    public void setPostService(PostService postService){
+        this.postService = postService;
+    }
+
     public void addComment(CommentRequest commentRequest, Long userId){
         var user = this.authService.getById(userId);
         var classroom = this.classroomService.getClassroomById(commentRequest.getClassroomId());
@@ -50,6 +58,10 @@ public class CommentService {
                 .content(commentRequest.getMessage())
                 .build();
         this.commentRepository.save(comment);
+    }
+
+    public void deleteAllCommentByPost(Post post){
+        this.commentRepository.deleteAllByPost(post);
     }
 
 }

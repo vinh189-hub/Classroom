@@ -26,5 +26,7 @@ public interface PostRepository extends CrudRepository<Post, Long> {
 
     Optional<Post> findByIdAndUserAndClassroom(long id, User user, Classroom classroom);
 
+    Optional<Post> findByIdAndClassroom(long id, Classroom classroom);
+
 
 }
