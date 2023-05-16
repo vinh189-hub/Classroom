@@ -107,11 +107,21 @@ public class MemberService {
         return res.getRole();
     }
 
+    public UserClassroom getUserClassroomByUserAndClassroom(Long userId, int classroomId){
+        var user = this.authService.getById(userId);
+        var classroom = this.classroomService.getClassroomById(classroomId);
+        return this.memberRepository.findByUserAndClassroom(user, classroom).orElseThrow(() -> new NoSuchElementException("User not in this Classroom"));
+    }
+
     public List<Classroom> getAllClassroomByUserId(long userId){
         List<Classroom> listClassroom = new ArrayList<>();
         var user = this.authService.getById(userId);
         var data = this.memberRepository.findByUser(user).orElseThrow();
         data.forEach(item -> listClassroom.add(item.getClassroom()));
         return listClassroom;
+    }
+
+    public List<UserClassroom> getAllUserByClassroomAndRole(Classroom classroom, int role){
+       return this.memberRepository.findByClassroomAndRole(classroom, role).orElse(null);
     }
 }

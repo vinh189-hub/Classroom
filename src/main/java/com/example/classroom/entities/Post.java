@@ -43,6 +43,7 @@ public class Post {
     private List<File> fileList;
 
     @OneToMany(mappedBy = "post")
+
     private List<Comment> commentList;
 
 
@@ -66,6 +67,7 @@ public class Post {
 
     @PreUpdate
     public void onUpdate() {
+        this.createdAt = this.getCreatedAt();
         this.updatedAt = new Date();
     }
 }

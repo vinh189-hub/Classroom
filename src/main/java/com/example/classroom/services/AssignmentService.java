@@ -2,9 +2,11 @@ package com.example.classroom.services;
 
 import com.example.classroom.dto.CreateAssignmentRequest;
 import com.example.classroom.entities.Assignment;
+import com.example.classroom.entities.Classroom;
 import com.example.classroom.entities.File;
 import com.example.classroom.enums.ERole;
 import com.example.classroom.exceptions.ForbiddenException;
+import com.example.classroom.exceptions.NoSuchElementException;
 import com.example.classroom.helpers.ConvertToUnixTime;
 import com.example.classroom.repositories.AssignmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,5 +80,9 @@ public class AssignmentService {
         } catch (Exception e) {
 
         }
+    }
+
+    public Assignment getAssignmentByIdAndClassroom(int id, Classroom classroom){
+        return this.assignmentRepository.findByIdAndClassroom(id, classroom).orElseThrow(() -> new NoSuchElementException("Khong co Assignment"));
     }
 }

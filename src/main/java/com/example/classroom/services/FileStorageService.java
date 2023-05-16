@@ -1,5 +1,8 @@
 package com.example.classroom.services;
 
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -16,7 +19,10 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 @Service
+
 public class FileStorageService {
+
+    Logger logger = LoggerFactory.getLogger(FileStorageService.class);
 
     private final Path root = Paths.get("/home/vinh/Documents/upload");
     public void init() {
@@ -41,6 +47,10 @@ public class FileStorageService {
 
     public String getUrlFile(MultipartFile file) {
         Path path = this.root.resolve(Objects.requireNonNull(file.getOriginalFilename()));
+        int value = path.compareTo(this.root);
+        if(value == 0){
+            return "default";
+        }
         return path.toUri().toString();
     }
     public Resource load(String filename) {

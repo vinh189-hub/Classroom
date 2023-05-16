@@ -5,11 +5,12 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class CommentRequest {
+public class UpdateCommentRequest {
+    int commentId;
     int classroomId;
     Long postId;
 
-    @NotNull()
     @NotEmpty()
+    @NotNull()
     String message;
 }

@@ -1,25 +1,22 @@
 package com.example.classroom.entities;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-
 import java.util.Date;
-import java.util.List;
 
 @Entity
-@Table(name = "submissions")
-@Data
+@Table(name = "marks")
+@Getter
+@Setter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class Submit {
+@AllArgsConstructor
+public class Mark {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +24,7 @@ public class Submit {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+//    @JsonIgnore
     private User user;
 
     @ManyToOne
@@ -34,10 +32,7 @@ public class Submit {
     @JsonIgnore
     private Assignment assignment;
 
-    @OneToMany(mappedBy = "submit")
-    private List<File> fileList;
-
-    private Long submissionDate;
+    private int score;
 
     @JsonProperty("created_at")
     @Column(name = "created_at")
@@ -61,4 +56,5 @@ public class Submit {
     public void onUpdate() {
         this.updatedAt = new Date();
     }
+
 }

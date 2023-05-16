@@ -26,11 +26,11 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseError(userNotFound.getMessage()));
     }
 
-//    @ExceptionHandler(ForbiddenException.class)
-//    @ResponseStatus(HttpStatus.FORBIDDEN)
-//    public ResponseEntity handleForbiddenException(ForbiddenException forbiddenException,WebRequest req) {
-//        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ResponseError(forbiddenException.getMessage()));
-//    }
+    @ExceptionHandler(ForbiddenException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ResponseEntity handleForbiddenException(ForbiddenException forbiddenException,WebRequest req) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ResponseError(forbiddenException.getMessage()));
+    }
 
     @ExceptionHandler(UserExistedException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -45,7 +45,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.badRequest().body(new ResponseError("data not valid"));
     }
 
-    @ExceptionHandler({AuthenticationException.class, ExpiredJwtException.class, JwtException.class, ForbiddenException.class})
+    @ExceptionHandler({AuthenticationException.class, ExpiredJwtException.class, JwtException.class})
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ResponseEntity handleAuthenticationException(Exception exception) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ResponseError("forbidden"));
@@ -79,7 +79,13 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(NoSuchElementException.class)
     @ResponseStatus(HttpStatus.BAD_GATEWAY)
-    public ResponseEntity hanleNoSuchElementException(NoSuchElementException noSuchElementException){
+    public ResponseEntity handleNoSuchElementException(NoSuchElementException noSuchElementException){
         return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(new ResponseError(noSuchElementException.getMessage()));
+    }
+
+    @ExceptionHandler(MalformedJwtException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ResponseEntity handleMalformedJwtException(MalformedJwtException malformedJwtException){
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ResponseError(malformedJwtException.getMessage()));
     }
 }
