@@ -1,7 +1,5 @@
 package com.example.classroom.services;
 
-import com.example.classroom.app.AllClassroomByUserIdResponse;
-import com.example.classroom.app.Response;
 import com.example.classroom.dto.CreateClassroomRequest;
 import com.example.classroom.dto.EmailSenderRequest;
 import com.example.classroom.dto.JoinByClassCodeRequest;
