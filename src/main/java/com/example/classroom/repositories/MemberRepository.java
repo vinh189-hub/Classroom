@@ -22,4 +22,6 @@ public interface MemberRepository extends CrudRepository<UserClassroom,Long> {
 
     Optional<List<UserClassroom>> findByClassroomAndRole(Classroom classroom, int role);
 
+    void deleteByClassroomAndUser(Classroom classroom, User user);
+
 }
