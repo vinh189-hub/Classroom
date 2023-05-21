@@ -1,6 +1,7 @@
 package com.example.classroom.controllers;
 
 import com.example.classroom.app.Response;
+import com.example.classroom.dto.DeleteStudentRequest;
 import com.example.classroom.dto.EmailSenderRequest;
 import com.example.classroom.dto.JoinByClassCodeRequest;
 import com.example.classroom.dto.TeacherCreateClassroomRequest;
@@ -51,6 +52,13 @@ public class MemberController  extends BaseController{
             throws MessagingException, IOException,Exception {
         this.memberService.inviteTeacherToClass(emailSenderRequest, this.getUserId());
         return ResponseEntity.ok(new Response("success",null));
+    }
+
+    @DeleteMapping("/delete-student")
+    public ResponseEntity deleteStudent(@RequestBody DeleteStudentRequest deleteStudentRequest){
+        var userId = this.getUserId();
+        this.memberService.deleteStudent(deleteStudentRequest, userId);
+        return ResponseEntity.ok("Success");
     }
 
 }

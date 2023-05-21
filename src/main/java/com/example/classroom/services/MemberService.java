@@ -1,33 +1,31 @@
 package com.example.classroom.services;
 
-import com.example.classroom.dto.CreateClassroomRequest;
-import com.example.classroom.dto.EmailSenderRequest;
-import com.example.classroom.dto.JoinByClassCodeRequest;
-import com.example.classroom.dto.TeacherCreateClassroomRequest;
+import com.example.classroom.dto.*;
 import com.example.classroom.entities.Classroom;
 import com.example.classroom.entities.User;
 import com.example.classroom.entities.UserClassroom;
 import com.example.classroom.enums.ERole;
 import com.example.classroom.exceptions.ClassroomNotFoundException;
 import com.example.classroom.exceptions.ConflictException;
+import com.example.classroom.exceptions.ForbiddenException;
 import com.example.classroom.exceptions.NoSuchElementException;
 import com.example.classroom.helpers.ValidateEmail;
 import com.example.classroom.repositories.MemberRepository;
-import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jobrunr.scheduling.JobScheduler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 @Service
 @Slf4j
-@AllArgsConstructor
 public class MemberService {
     private ClassroomService classroomService;
     private AuthService authService;
@@ -40,12 +38,23 @@ public class MemberService {
     private UserService userService;
 
 
-    //    @Autowired
-//    public MemberService(ClassroomService classroomService,AuthService authService,MemberRepository memberRepository, ) {
-//        this.classroomService = classroomService;
-//        this.authService = authService;
-//        this.memberRepository = memberRepository;
-//    }
+    @Autowired
+    public MemberService(
+            ClassroomService classroomService,
+            AuthService authService,
+            MemberRepository memberRepository,
+            EmailSenderService emailSenderService,
+            JobScheduler jobScheduler,
+            UserService userService
+    ) {
+        this.emailSenderService = emailSenderService;
+        this.jobScheduler = jobScheduler;
+        this.userService = userService;
+        this.classroomService = classroomService;
+        this.authService = authService;
+        this.memberRepository = memberRepository;
+    }
+
     @Transactional(rollbackOn = Exception.class)
     public void teacherCreateClassroom(TeacherCreateClassroomRequest request, Long teacherId) throws ConflictException {
         var user = this.authService.getById(teacherId);
@@ -71,7 +80,7 @@ public class MemberService {
         }
     }
 
-    public void inviteTeacherToClass(EmailSenderRequest emailSenderRequest, Long id) throws Exception, AuthorizationServiceException {
+    public void inviteTeacherToClass(EmailSenderRequest emailSenderRequest, Long id) throws Exception {
         var validEmail = Arrays.stream(emailSenderRequest.getEmail()).filter(ValidateEmail::validate);
         var validEmailArr = validEmail.toList();
         var user = this.authService.getMe(id);
@@ -105,13 +114,13 @@ public class MemberService {
         return res.getRole();
     }
 
-    public UserClassroom getUserClassroomByUserAndClassroom(Long userId, int classroomId){
+    public UserClassroom getUserClassroomByUserAndClassroom(Long userId, int classroomId) {
         var user = this.authService.getById(userId);
         var classroom = this.classroomService.getClassroomById(classroomId);
         return this.memberRepository.findByUserAndClassroom(user, classroom).orElseThrow(() -> new NoSuchElementException("User not in this Classroom"));
     }
 
-    public List<Classroom> getAllClassroomByUserId(long userId){
+    public List<Classroom> getAllClassroomByUserId(long userId) {
         List<Classroom> listClassroom = new ArrayList<>();
         var user = this.authService.getById(userId);
         var data = this.memberRepository.findByUser(user).orElseThrow();
@@ -119,7 +128,19 @@ public class MemberService {
         return listClassroom;
     }
 
-    public List<UserClassroom> getAllUserByClassroomAndRole(Classroom classroom, int role){
-       return this.memberRepository.findByClassroomAndRole(classroom, role).orElse(null);
+    public List<UserClassroom> getAllUserByClassroomAndRole(Classroom classroom, int role) {
+        return this.memberRepository.findByClassroomAndRole(classroom, role).orElse(null);
+    }
+
+    public void deleteStudent(DeleteStudentRequest deleteStudentRequest, long userId){
+        var userClassroom = this.getUserClassroomByUserAndClassroom(userId, deleteStudentRequest.getClassroomId());
+        if(userClassroom.getRole() == ERole.TEACHER.getValue()){
+            var user = this.userService.getById(deleteStudentRequest.getId());
+            this.memberRepository.deleteByClassroomAndUser(userClassroom.getClassroom(), user);
+        } else if (userClassroom.getRole() == ERole.STUDENT.getValue() && userId == deleteStudentRequest.getId()) {
+            this.memberRepository.deleteByClassroomAndUser(userClassroom.getClassroom(), userClassroom.getUser());
+        }else{
+            throw new ForbiddenException("Forbidden");
+        }
     }
 }

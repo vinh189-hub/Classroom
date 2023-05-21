@@ -3,12 +3,15 @@ package com.example.classroom.services;
 
 import com.example.classroom.app.Response;
 import com.example.classroom.dto.CreateClassroomRequest;
+import com.example.classroom.dto.DeleteClassroomRequest;
 import com.example.classroom.dto.JoinByClassCodeRequest;
 import com.example.classroom.dto.RegisterClassroomRequest;
 import com.example.classroom.entities.Classroom;
 import com.example.classroom.entities.User;
 import com.example.classroom.entities.UserClassroom;
+import com.example.classroom.enums.ERole;
 import com.example.classroom.exceptions.ClassroomNotFoundException;
+import com.example.classroom.exceptions.ForbiddenException;
 import com.example.classroom.helpers.RandomString;
 import com.example.classroom.repositories.AuthRepository;
 import com.example.classroom.repositories.ClassroomRepository;
@@ -85,6 +88,15 @@ public class ClassroomService {
 
     public List<Classroom> getAllClassroomByUserId(long userId){
         return this.memberService.getAllClassroomByUserId(userId);
+    }
+
+    public void delete(DeleteClassroomRequest deleteClassroomRequest, long userId){
+        var userClassroom = this.memberService.getUserClassroomByUserAndClassroom(userId, deleteClassroomRequest.getClassroomId());
+        if(userClassroom.getRole() == ERole.STUDENT.getValue()){
+            throw new ForbiddenException("Forbidden");
+        }
+
+
     }
 
 
