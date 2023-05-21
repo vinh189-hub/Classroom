@@ -2,44 +2,43 @@ package com.example.classroom.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import java.util.*;
+import java.util.Date;
 
 @Entity
-@Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
+@Setter
+@Getter
 @Builder
-@Table(name = "classrooms")
-public class Classroom {
+@Table(name = "files")
+public class File {
 
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private String name;
-    private String code;
-    private String description;
+    private String url;
 
-    private String theme;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "post_id")
+    @JsonIgnore
+    private Post post;
 
-    @OneToMany(mappedBy = "classroom")
-    private Set<UserClassroom> userClassrooms;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "assignment_id")
+    @JsonIgnore
+    private Assignment assignment;
 
-    @OneToMany(mappedBy = "classroom")
-    private List<Post> postList;
-
-    @OneToMany(mappedBy = "classroom")
-    private List<Assignment> assignmentList;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "submission_id")
+    @JsonIgnore
+    private Submit submit;
 
     @JsonProperty("created_at")
     @Column(name = "created_at")
@@ -63,5 +62,4 @@ public class Classroom {
     public void onUpdate() {
         this.updatedAt = new Date();
     }
-
 }

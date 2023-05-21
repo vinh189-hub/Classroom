@@ -1,45 +1,38 @@
 package com.example.classroom.entities;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-
-import java.util.*;
+import java.util.Date;
 
 @Entity
-@Data
+@Table(name = "marks")
+@Getter
+@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Table(name = "classrooms")
-public class Classroom {
-
+public class Mark {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private String name;
-    private String code;
-    private String description;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+//    @JsonIgnore
+    private User user;
 
-    private String theme;
+    @ManyToOne
+    @JoinColumn(name = "assignment_id")
+    @JsonIgnore
+    private Assignment assignment;
 
-    @OneToMany(mappedBy = "classroom")
-    private Set<UserClassroom> userClassrooms;
-
-    @OneToMany(mappedBy = "classroom")
-    private List<Post> postList;
-
-    @OneToMany(mappedBy = "classroom")
-    private List<Assignment> assignmentList;
+    private int score;
 
     @JsonProperty("created_at")
     @Column(name = "created_at")
